@@ -21,14 +21,24 @@ class System:
             raise UnexpectedObj
         self.rules.append(rule)
 
+    def add_rules(self, rules: list):
+        """批量添加规则"""
+        for r in rules:
+            self.add_rule(r)
+
     def add_fact(self, fact: HornClause):
         """向事实库中添加事实"""
         if not isinstance(fact, HornClause):
             raise UnexpectedObj
         # 事实库中必须是无头/无体子句
-        if not (fact.body is None or fact.head is None):
+        if not (fact.body[0] is None or fact.head is None):
             raise UnexpectedObj
         self.facts.append(fact)
+
+    def add_facts(self, facts):
+        """批量添加事实"""
+        for f in facts:
+            self.add_fact(f)
 
     def show(self):
         print("# 事实")
