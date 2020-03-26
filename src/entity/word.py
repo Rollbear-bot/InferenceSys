@@ -16,6 +16,8 @@ class Word:
 
     def is_equal(self, other):
         """判断两个文字是否相等"""
+        if other is None:
+            return False
         if len(self.constant) != len(other.constant):
             return False
         # 首先判断谓词操作的常量是否相同
