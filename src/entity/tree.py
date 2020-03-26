@@ -11,3 +11,9 @@ class Node:
         self.sub_node = []  # 子节点
         self.parent = None  # 父节点
         self.data = data  # 数据域
+
+    def link_as_sub_node(self, data):
+        """作为子节点链入"""
+        sub = Node(data)
+        sub.parent = self
+        self.sub_node.append(sub)
