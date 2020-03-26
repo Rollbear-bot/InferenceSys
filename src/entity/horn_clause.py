@@ -28,8 +28,12 @@ class HornClause:
         :param other: 另一个子句
         :return: 新的子句（消解结果）
         """
-        if self.head != other.body[0]:
+        if self.body[0] != other.head:
             raise InvalidOperation
         # 结果是无头子句
-        result = HornClause(None, other.body[1:] + self.body)
+        result = HornClause(None, self.body[1:] + other.body)
         return result
+
+    def is_null_clause(self):
+        """当前子句是否为空子句"""
+        return self.head is None and self.body == [None]
