@@ -12,9 +12,9 @@ class Word:
         self.pred = predicate  # 谓词
 
     def __str__(self):
-        return self.pred.exec(self.constant)
+        return self.pred.func(self.constant)
 
-    def __eq__(self, other):
+    def is_equal(self, other):
         """判断两个文字是否相等"""
         other_c = other.constant.copy()
         self_c = self.constant.copy()
@@ -43,7 +43,8 @@ class Predicate:
         :param p: 参数
         :return: 字符串
         """
-        return self.func(p)
+        # return self.func(p)
+        return Word(self, p)
 
 
 class Anyone:
