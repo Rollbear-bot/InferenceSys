@@ -16,20 +16,17 @@ class Word:
 
     def is_equal(self, other):
         """判断两个文字是否相等"""
-        other_c = other.constant.copy()
-        self_c = self.constant.copy()
         if len(self.constant) != len(other.constant):
             return False
+        # 首先判断谓词操作的常量是否相同
         for i in range(len(self.constant)):
+            # Anyone对象可以匹配任何值
             if self.constant[i] != other.constant[i]:
-                if self.constant[i] == Anyone() \
-                        or other.constant[i] == Anyone():
-                    # Anyone对象可以匹配任何值
-                    other_c[i], self_c[i] = Anyone()
-                    pass
-                else:
-                    return False
-        return str(Word(self.pred, self_c)) == str(Word(other.pred, other_c))
+                return False
+        # 最后判断谓词是否相等
+        self_pred_only = self.pred.exec([Anyone() for c in range(len(self.constant))])
+        other_pred_only = other.pred.exec([Anyone() for c in range(len(other.constant))])
+        return str(self_pred_only) == str(other_pred_only)
 
 
 class Predicate:
@@ -41,9 +38,8 @@ class Predicate:
         """
         执行谓词
         :param p: 参数
-        :return: 字符串
+        :return: 文字对象
         """
-        # return self.func(p)
         return Word(self, p)
 
 
