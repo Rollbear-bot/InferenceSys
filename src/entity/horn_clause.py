@@ -3,7 +3,7 @@
 # @Author: Rollbear
 # @Filename: horn_clause.py
 
-from .word import Word
+from .word import Word, Anyone
 
 
 class InvalidOperation(Exception):
@@ -24,12 +24,21 @@ class HornClause:
 
     def union(self, other):
         """
-        两个子句消解
+        两个子句消解，左操作数是无头子句
         :param other: 另一个子句
         :return: 新的子句（消解结果）
         """
-        if self.body[0] != other.head:
+        if not self.body[0].is_equal(other.head):
             raise InvalidOperation
+
+        # 如果一个文字中有Anyone变量，而另一子句的相应文字是常量，
+        # 则应当用常量取代变量
+        # todo::常量替换
+        if Anyone() in self.body[0].constant:
+            self.body[0].constant = other.head.constant
+        elif Anyone() in other.head.constant:
+            other.head.constant = self.body[0].constant
+
         # 结果是无头子句
         result = HornClause(None, self.body[1:] + other.body)
         return result
