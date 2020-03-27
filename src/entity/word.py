@@ -46,8 +46,16 @@ class Predicate:
 
 
 class Anyone:
+    def __init__(self, name):
+        self.name = name
+
     def __str__(self):
-        return "<任何>"
+        return f"<变量{self.name}>"
 
     def __eq__(self, other):
-        return True
+        # 如果右操作数不是Anyone实例，则判等始终为真
+        if not isinstance(other, Anyone):
+            return True
+        # 如果是Anyone实例，则要判断变量名是否相等
+        else:
+            return self.name == other.name
