@@ -33,11 +33,13 @@ class HornClause:
 
         # 如果一个文字中有Anyone变量，而另一子句的相应文字是常量，
         # 则应当用常量取代变量
-        # todo::常量替换
-        if Anyone() in self.body[0].constant:
-            self.body[0].constant = other.head.constant
-        elif Anyone() in other.head.constant:
-            other.head.constant = self.body[0].constant
+        # todo::常量替换对一个子句中的同一个变量应当同时替换
+        for c in self.body[0].constant:
+            if isinstance(c, Anyone):
+                self.body[0].constant = other.head.constant
+        for c in other.head.constant:
+            if isinstance(c, Anyone):
+                other.head.constant = self.body[0].constant
 
         # 结果是无头子句
         result = HornClause(None, self.body[1:] + other.body)
@@ -45,4 +47,15 @@ class HornClause:
 
     def is_null_clause(self):
         """当前子句是否为空子句"""
-        return self.head is None and self.body == [None]
+        return self.head is None and set(self.body) == {None}
+
+    @staticmethod
+    def create_clause_variables_only(head: list, body: list):
+        """
+        快速建立只含变量的子句
+        :param head: 格式(predicate,[var_names...])的元组
+        :param body: 格式(predicate,[var_names...])的元组组成的列表/元组
+        :return: Horn子句
+        """
+        return HornClause(head[0].exec([Anyone(var_name) for var_name in head[1]]),
+                          [word[0].exec(Anyone(var_name) for var_name in word[1]) for word in body])
