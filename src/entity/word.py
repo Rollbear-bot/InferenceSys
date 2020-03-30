@@ -26,8 +26,9 @@ class Word:
             if self.constant[i] != other.constant[i]:
                 return False
         # 最后判断谓词是否相等
-        self_pred_only = self.pred.exec([Anyone() for c in range(len(self.constant))])
-        other_pred_only = other.pred.exec([Anyone() for c in range(len(other.constant))])
+        # todo::变量的命名是否合理？
+        self_pred_only = self.pred.exec([Anyone("A") for c in range(len(self.constant))])
+        other_pred_only = other.pred.exec([Anyone("A") for c in range(len(other.constant))])
         return str(self_pred_only) == str(other_pred_only)
 
 
@@ -43,6 +44,11 @@ class Predicate:
         :return: 文字对象
         """
         return Word(self, p)
+
+    @staticmethod
+    def create_pred(info: str):
+        """快速建立谓词"""
+        return Predicate(lambda x: "(" + ", ".join(x) + ")" + "是" + info)
 
 
 class Anyone:
