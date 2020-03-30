@@ -64,6 +64,9 @@ class System:
         :param cur_repo: 当前子句仓库
         :return: 空子句或异常
         """
+        # 打印结点信息
+        print(f"\nIn \"_run_rec\", current clause: \"{str(cur_node.data)}\"")
+
         if cur_node.data.is_null_clause():
             # 如果当前已到达空子句则返回，递归出口（返回该空子句）
             return cur_node.data
@@ -74,12 +77,22 @@ class System:
 
         # 若找不到匹配的子句，则fail，回溯到上一个结点
         if len(target_lt) == 0:
+            # 打印fail信息
+            print("There is not any available clauses, fail and return.")
             return None  # 使用None来表示fail
 
-        # 对lt中的每一个选择都建立一个分支
+        # 打印所有被选中的可用子句
+        print("Available clauses of current node:")
+        for index, c in enumerate(target_lt):
+            print(f"{index}: {str(c)}")
+        print("Each of them generate a branch.")
+
+        # 对所有可用的子句都建立一个分支
         for t in target_lt:
             # 两个子句消解
             new_clause = cur_node.data.union(t)
+            print(f"New clause \"{str(new_clause)}\",\n"
+                  f"from unity of \"{str(cur_node.data)}\" and \"{str(t)}\".")
             # 新子句作为子节点链入树中
             cur_node.link_as_sub_node(new_clause)
             # 新子句加入库
@@ -89,7 +102,9 @@ class System:
         for sub in cur_node.sub_node:
             result = self._run_rec(sub, cur_repo)
             if result is not None:  # 非None即获得了空子句
+                print(f"Succeed and return \"{str(sub.data)}\"")
                 return sub.data  # 返回该空子句
+        print("All the branches failed.")
         return None  # fail
 
 
