@@ -29,7 +29,7 @@ def create_tmp_horn_clauses():
 
 class TestSys(unittest.TestCase):
     """测试推理系统"""
-    def test_union(self):
+    def test_system(self):
         """测试两个子句归结"""
         # 定义谓词
         ps = Predicate(lambda x: str(x[0]) + "通过" + str(x[1]))
@@ -72,6 +72,31 @@ class TestSys(unittest.TestCase):
         res = sys.run()  # 开始推理
         print(res)
 
+    def test_system_case_2(self):
+        """测试亲戚关系运算"""
+        # 定义谓词
+        male = Predicate.create_pred("男性")
+        female = Predicate.create_pred("女性")
+        parenting = Predicate.create_pred("亲子关系")
+        father_son = Predicate.create_pred("父子关系")
+        father_dau = Predicate.create_pred("父女关系")
+        mother_son = Predicate.create_pred("母子关系")
+        mother_dau = Predicate.create_pred("母女关系")
+        bro_sister = Predicate.create_pred("兄妹关系")
+        cousin = Predicate.create_pred("表兄妹")
+
+        # 规则集合
+        r1 = HornClause(cousin.exec([Anyone("X")]),
+                        [father_son.exec([Anyone("U"), Anyone("X")]),
+                         mother_dau.exec([Anyone("V"), Anyone("Y")]),
+                         bro_sister.exec([Anyone("U"), Anyone("V")]),
+                         cousin.exec([Anyone("X"), Anyone("Y")])])
+        r2 = HornClause(father_son.exec([Anyone("X"), Anyone("Y")]),
+                        [male.exec([Anyone("X")]),
+                         male.exec([Anyone("Y")]),
+                         ])
+
+
 
 class TestWord(unittest.TestCase):
     """测试文字运算"""
@@ -82,6 +107,12 @@ class TestWord(unittest.TestCase):
         w = ps.exec(["John", "历史考试"])
         self.assertListEqual(w.constant, ["John", "历史考试"])
         self.assertEqual(str(w), "John通过历史考试")
+
+    def test_create_pred(self):
+        """测试快速建立谓词方法create_pred"""
+        father_son = Predicate.create_pred("父子关系")
+        word = father_son.exec(["A", "B"])
+        self.assertEqual(str(word), "(A, B)是父子关系")
 
 
 class TestHornClause(unittest.TestCase):
@@ -111,6 +142,15 @@ class TestHornClause(unittest.TestCase):
         result = hc1.union(hc2)
         self.assertListEqual(result.body[0].constant, ["John", "history"])
         self.assertListEqual(result.body[1].constant, ["John", "lottery"])
+
+    def test_quick_build(self):
+        """快速建立只含变量的子句"""
+        male = Predicate.create_pred("男性")
+        female = Predicate.create_pred("女性")
+        body = ((male, ["A"]), (female, ["B"]))
+        # todo::建立子句不成功
+        c = HornClause.create_clause_variables_only((male, ["A"]), body)
+        print(c)
 
 
 if __name__ == '__main__':
