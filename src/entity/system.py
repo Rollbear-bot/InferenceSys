@@ -88,11 +88,11 @@ class System:
         print("Each of them generate a branch.")
 
         # 对所有可用的子句都建立一个分支
-        for t in target_lt:
+        for index, t in enumerate(target_lt):
             # 两个子句消解
             new_clause = cur_node.data.union(t)
-            print(f"New clause \"{str(new_clause)}\",\n"
-                  f"from unity of \"{str(cur_node.data)}\" and \"{str(t)}\".")
+            print(f"Sub_node {index}: new clause \"{str(new_clause)}\",\n"
+                  f"\tfrom unity of \"{str(cur_node.data)}\" and \"{str(t)}\".")
             # 新子句作为子节点链入树中
             cur_node.link_as_sub_node(new_clause)
             # 新子句加入库
@@ -104,7 +104,7 @@ class System:
             if result is not None:  # 非None即获得了空子句
                 print(f"Succeed and return \"{str(sub.data)}\"")
                 return sub.data  # 返回该空子句
-        print("All the branches failed.")
+        print("Branch fail and return.")
         return None  # fail
 
 
