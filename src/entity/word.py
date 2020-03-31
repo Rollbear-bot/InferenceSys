@@ -43,7 +43,7 @@ class Predicate:
 
     def exec(self, p: list):
         """
-        执行谓词
+        执行谓词，将谓词和指定的参数组合成一个文字对象
         :param p: 参数
         :return: 文字对象
         """
@@ -51,8 +51,15 @@ class Predicate:
 
     @staticmethod
     def create_pred(info: str):
-        """快速建立谓词"""
+        """快速建立谓词
+        返回(<para1>, <para2>, ...)是<info>形式的谓词"""
         return Predicate(lambda x: "(" + ", ".join(x) + ")" + "是" + info)
+
+    @staticmethod
+    def create_preds(info_lt: list):
+        """快速建立一组谓词
+        返回(<para1>, <para2>, ...)是<info>形式的谓词组成的元组"""
+        return tuple([Predicate.create_pred(info) for info in info_lt])
 
 
 class Anyone:
