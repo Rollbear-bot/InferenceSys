@@ -68,7 +68,7 @@ class System:
         :param debug 是否打印推理流程到控制台
         :return: 空子句或异常
         """
-        # 打印结点信
+        # 打印结点信息
         if debug:
             print(f"\nIn \"_run_rec\", current clause: \"{str(cur_node.data)}\"")
 
