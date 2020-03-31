@@ -31,6 +31,10 @@ class Word:
         other_pred_only = other.pred.exec([Anyone("A") for c in range(len(other.constant))])
         return str(self_pred_only) == str(other_pred_only)
 
+    def copy(self):
+        """文字的深复制"""
+        return Word(self.pred, self.constant.copy())
+
 
 class Predicate:
     """谓词"""
