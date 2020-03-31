@@ -2,8 +2,7 @@
 # @Time: 2020/3/25 20:20
 # @Author: Rollbear
 # @Filename: horn_clause.py
-
-from .word import Word, Anyone
+from entity.word import Anyone, Word
 
 
 class InvalidOperation(Exception):
@@ -31,15 +30,34 @@ class HornClause:
         if not self.body[0].is_equal(other.head):
             raise InvalidOperation
 
-        # 如果一个文字中有Anyone变量，而另一子句的相应文字是常量，
-        # 则应当用常量取代变量
-        # todo::常量替换对一个子句中的同一个变量应当同时替换
-        for c in self.body[0].constant:
+        # 带变量的子句归结：
+        # 某个文字的某个谓词是变量->从与其消解的文字中找出对应位置的常量
+        # ->定位前者所有文字中的这个变量
+        # ->这个变量在这条子句中的所有出现用上面提到的常量取代
+        # 首先检查左操作数的负文字是否含有变量
+        for index, c in enumerate(self.body[0].constant):
             if isinstance(c, Anyone):
-                self.body[0].constant = other.head.constant
-        for c in other.head.constant:
+                # 找出对应位置的常量
+                map_constant = other.head.constant[index]
+                for word in self.body:
+                    # 遍历左操作数的所有负文字的所有元
+                    for e_index, elem in enumerate(word.constant):
+                        if isinstance(elem, Anyone) and elem == c:
+                            word.constant[e_index] = map_constant
+
+        # 对右操作数的头部和体部的所有文字，重复上面的检查算法
+        for index, c in enumerate(other.head.constant):
             if isinstance(c, Anyone):
-                other.head.constant = self.body[0].constant
+                # 找出对应位置的常量
+                map_constant = self.body[0].constant[index]
+                # 遍历所有元
+                for e_index, elem in enumerate(other.head.constant):
+                    if isinstance(elem, Anyone) and elem == c:
+                        other.head.constant[e_index] = map_constant
+                for word in other.body:
+                    for e_index, elem in enumerate(word.constant):
+                        if isinstance(elem, Anyone) and elem == c:
+                            word.constant[e_index] = map_constant
 
         # 结果是无头子句
         result = HornClause(None, self.body[1:] + other.body)
@@ -50,11 +68,11 @@ class HornClause:
         return self.head is None and set(self.body) == {None}
 
     @staticmethod
-    def create_clause_variables_only(head: list, body: list):
+    def create_clause_variables_only(head: tuple, body: tuple):
         """
         快速建立只含变量的子句
         :param head: 格式(predicate,[var_names...])的元组
-        :param body: 格式(predicate,[var_names...])的元组组成的列表/元组
+        :param body: 格式(predicate,[var_names...])的元组组成的元组
         :return: Horn子句
         """
         return HornClause(head[0].exec([Anyone(var_name) for var_name in head[1]]),

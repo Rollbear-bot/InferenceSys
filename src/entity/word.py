@@ -8,7 +8,7 @@ class Word:
     """文字"""
     def __init__(self, predicate, constant: list):
         """构造方法"""
-        self.constant = constant  # 常量
+        self.constant = constant  # 常量，也能存放变量Anyone对象
         self.pred = predicate  # 谓词
 
     def __str__(self):

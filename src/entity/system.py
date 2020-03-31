@@ -55,7 +55,7 @@ class System:
         """归结"""
         repo = self.rules + self.facts  # 把规则和事实合成一个库
         root = Node(self.target)  # 从推理目标开始
-        if self._run_rec(root, repo) is not None:
+        if self._run_rec(root, repo, debug) is not None:
             return True
         else:
             return False
@@ -84,7 +84,7 @@ class System:
         if len(target_lt) == 0:
             # 打印fail信息
             if debug:
-                print("There is not any available clauses, fail and return.")
+                print("There is not any available clause, fail and return.")
             return None  # 使用None来表示fail
 
         # 打印所有被选中的可用子句
@@ -108,7 +108,7 @@ class System:
 
         # 检查是否所有分支的终点都是fail
         for sub in cur_node.sub_node:
-            result = self._run_rec(sub, cur_repo)
+            result = self._run_rec(sub, cur_repo, debug)
             if result is not None:  # 非None即获得了空子句
                 if debug:
                     print(f"Succeed and return \"{str(sub.data)}\"")
