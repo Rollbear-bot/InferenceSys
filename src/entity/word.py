@@ -12,7 +12,7 @@ class Word:
         self.pred = predicate  # 谓词
 
     def __str__(self):
-        return self.pred.func(self.constant)
+        return self.pred.func([str(c) for c in self.constant])
 
     def is_equal(self, other):
         """判断两个文字是否相等"""
@@ -53,7 +53,7 @@ class Predicate:
     def create_pred(info: str):
         """快速建立谓词
         返回(<para1>, <para2>, ...)是<info>形式的谓词"""
-        return Predicate(lambda x: "(" + ", ".join(x) + ")" + "是" + info)
+        return Predicate(lambda x: "(" + (", ".join(x)) + ")" + "是" + info)
 
     @staticmethod
     def create_preds(info_lt: list):
