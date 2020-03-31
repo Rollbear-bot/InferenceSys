@@ -12,7 +12,7 @@ class InvalidOperation(Exception):
 
 class HornClause:
     """Horn子句"""
-    def __init__(self, head: Word, body: list):
+    def __init__(self, head, body: list):
         """构造方法"""
         self.head = head
         self.body = body
@@ -64,12 +64,17 @@ class HornClause:
                             word.constant[e_index] = map_constant
 
         # 结果是无头子句
+        for index, word in enumerate(other_clone.body):
+            for elem in self_clone.body[1:]:
+                if elem.is_equal(word):
+                    other_clone.body.pop(index)  # 消去重复文字
         result = HornClause(None, self_clone.body[1:] + other_clone.body)
         return result
 
     def is_null_clause(self):
         """当前子句是否为空子句"""
-        return self.head in [None, []] and set(self.body) in [{None}, set()]
+        return self.head in [None, []] \
+            and (len(self.body) == 0 or set([word is None for word in self.body]) == {True})
 
     def copy(self):
         """Horn子句的深复制"""
