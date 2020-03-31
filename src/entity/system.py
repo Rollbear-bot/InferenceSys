@@ -74,6 +74,8 @@ class System:
 
         if cur_node.data.is_null_clause():
             # 如果当前已到达空子句则返回，递归出口（返回该空子句）
+            if debug:
+                print("Current clause is an empty clause.")
             return cur_node.data
 
         # 从库中筛选所有正文字与当前节点“左边第一个负文字”相等的子句
@@ -89,10 +91,10 @@ class System:
 
         # 打印所有被选中的可用子句
         if debug:
-            print("Available clauses of current node:")
+            print("Available clause(s) of current node:")
             for index, c in enumerate(target_lt):
                 print(f"{index}: {str(c)}")
-            print("Each of them generate a branch.")
+            print("Each of them generates a branch.")
 
         # 对所有可用的子句都建立一个分支
         for index, t in enumerate(target_lt):
@@ -114,7 +116,7 @@ class System:
                     print(f"Succeed and return \"{str(sub.data)}\"")
                 return sub.data  # 返回该空子句
         if debug:
-            print("Branch fail and return.")
+            print("Branch fail and rollback.")
         return None  # fail
 
 
