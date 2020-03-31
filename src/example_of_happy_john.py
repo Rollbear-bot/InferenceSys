@@ -18,7 +18,7 @@ def main():
     # 事实集
     facts_set = [
         # 子句"John快乐 <- None"，这里的lucky是HappyJohn库中声明的谓词对象
-        HornClause(HappyJohn.lucky.exec(["John"]), []),
+        # HornClause(HappyJohn.lucky.exec(["John"]), []),
         # 子句"None <- John学习"
         HornClause(None, [HappyJohn.study.exec(["John"])])
     ]

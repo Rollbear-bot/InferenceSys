@@ -58,7 +58,7 @@ class TestSys(unittest.TestCase):
                         ])
 
         # 事实集
-        f1 = HornClause(lucky.exec(["John"]), [None])
+        f1 = HornClause(lucky.exec(["John"]), [])
         f2 = HornClause(None, [study.exec(["John"])])
 
         # 待证明结论
@@ -69,32 +69,46 @@ class TestSys(unittest.TestCase):
         sys.add_facts([f1, f2])
         sys.add_rules([r1, r2, r3, r4])
         sys.show()
-        res = sys.run()  # 开始推理
+        res = sys.run(debug=True)  # 开始推理
         print(res)
 
     def test_system_case_2(self):
         """测试亲戚关系运算"""
         # 定义谓词
-        male = Predicate.create_pred("男性")
-        female = Predicate.create_pred("女性")
-        parenting = Predicate.create_pred("亲子关系")
-        father_son = Predicate.create_pred("父子关系")
-        father_dau = Predicate.create_pred("父女关系")
-        mother_son = Predicate.create_pred("母子关系")
-        mother_dau = Predicate.create_pred("母女关系")
-        bro_sister = Predicate.create_pred("兄妹关系")
-        cousin = Predicate.create_pred("表兄妹")
+        male, female, parenting, father_son, father_dau, \
+            mother_son, mother_dau, bro_sister, cousin \
+            = Predicate.create_preds(["男性", "女性", "亲子关系",
+                                      "父子关系", "父女关系", "母子关系",
+                                      "母女关系", "兄妹关系", "表兄妹"])
+
+        # 事实集合
+        f1 = HornClause(father_son.exec(["John", "Tom"]), [])
+        f2 = HornClause(father_dau.exec(["John", "Sally"]), [])
 
         # 规则集合
-        r1 = HornClause(cousin.exec([Anyone("X")]),
-                        [father_son.exec([Anyone("U"), Anyone("X")]),
-                         mother_dau.exec([Anyone("V"), Anyone("Y")]),
-                         bro_sister.exec([Anyone("U"), Anyone("V")]),
-                         cousin.exec([Anyone("X"), Anyone("Y")])])
-        r2 = HornClause(father_son.exec([Anyone("X"), Anyone("Y")]),
-                        [male.exec([Anyone("X")]),
-                         male.exec([Anyone("Y")]),
-                         ])
+        r1 = HornClause(female.exec([Anyone("A")]),
+                        [father_dau.exec([Anyone("B"), Anyone("A")])])
+        r2 = HornClause(male.exec([Anyone("A")]),
+                        [father_son.exec([Anyone("B"), Anyone("A")])])
+        r3 = HornClause(bro_sister.exec([Anyone("A"), Anyone("B")]),
+                        [father_son.exec([Anyone("C"), Anyone("A")]),
+                         father_dau.exec([Anyone("C"), Anyone("B")])])
+        r4 = HornClause(father_son.exec([Anyone("A"), Anyone("B")]),
+                        [bro_sister.exec([Anyone("B"), Anyone("C")]),
+                         father_dau.exec([Anyone("A"), Anyone("C")])])
+        r5 = HornClause(father_dau.exec([Anyone("A"), Anyone("C")]),
+                        [bro_sister.exec([Anyone("B"), Anyone("C")]),
+                         father_son.exec([Anyone("A"), Anyone("B")])])
+
+        # 推理目标
+        target = HornClause(None, [bro_sister.exec(["Tom", "Sally"])])
+
+        sys = System(target)
+        sys.add_facts([f1, f2])
+        sys.add_rules([r1, r2, r3, r4, r5])
+        sys.show()
+        sys.run(debug=True)
+
 
 
 
@@ -148,9 +162,7 @@ class TestHornClause(unittest.TestCase):
         male = Predicate.create_pred("男性")
         female = Predicate.create_pred("女性")
         body = ((male, ["A"]), (female, ["B"]))
-        # todo::建立子句不成功
         c = HornClause.create_clause_variables_only((male, ["A"]), body)
-        print(c)
 
 
 if __name__ == '__main__':
