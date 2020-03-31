@@ -51,21 +51,26 @@ class System:
             print(rule)
         print("\n# 目标\n" + str(self.target))
 
-    def run(self):
+    def run(self, debug=False):
         """归结"""
         repo = self.rules + self.facts  # 把规则和事实合成一个库
         root = Node(self.target)  # 从推理目标开始
-        return self._run_rec(root, repo)
+        if self._run_rec(root, repo) is not None:
+            return True
+        else:
+            return False
 
-    def _run_rec(self, cur_node: Node, cur_repo: list):
+    def _run_rec(self, cur_node: Node, cur_repo: list, debug=False):
         """
         递归归结
         :param cur_node: 当前结点
         :param cur_repo: 当前子句仓库
+        :param debug 是否打印推理流程到控制台
         :return: 空子句或异常
         """
-        # 打印结点信息
-        print(f"\nIn \"_run_rec\", current clause: \"{str(cur_node.data)}\"")
+        # 打印结点信
+        if debug:
+            print(f"\nIn \"_run_rec\", current clause: \"{str(cur_node.data)}\"")
 
         if cur_node.data.is_null_clause():
             # 如果当前已到达空子句则返回，递归出口（返回该空子句）
@@ -78,21 +83,24 @@ class System:
         # 若找不到匹配的子句，则fail，回溯到上一个结点
         if len(target_lt) == 0:
             # 打印fail信息
-            print("There is not any available clauses, fail and return.")
+            if debug:
+                print("There is not any available clauses, fail and return.")
             return None  # 使用None来表示fail
 
         # 打印所有被选中的可用子句
-        print("Available clauses of current node:")
-        for index, c in enumerate(target_lt):
-            print(f"{index}: {str(c)}")
-        print("Each of them generate a branch.")
+        if debug:
+            print("Available clauses of current node:")
+            for index, c in enumerate(target_lt):
+                print(f"{index}: {str(c)}")
+            print("Each of them generate a branch.")
 
         # 对所有可用的子句都建立一个分支
         for index, t in enumerate(target_lt):
             # 两个子句消解
             new_clause = cur_node.data.union(t)
-            print(f"Sub_node {index}: new clause \"{str(new_clause)}\",\n"
-                  f"\tfrom unity of \"{str(cur_node.data)}\" and \"{str(t)}\".")
+            if debug:
+                print(f"Sub_node {index}: new clause \"{str(new_clause)}\",\n"
+                      f"\tfrom unity of \"{str(cur_node.data)}\" and \"{str(t)}\".")
             # 新子句作为子节点链入树中
             cur_node.link_as_sub_node(new_clause)
             # 新子句加入库
@@ -102,9 +110,11 @@ class System:
         for sub in cur_node.sub_node:
             result = self._run_rec(sub, cur_repo)
             if result is not None:  # 非None即获得了空子句
-                print(f"Succeed and return \"{str(sub.data)}\"")
+                if debug:
+                    print(f"Succeed and return \"{str(sub.data)}\"")
                 return sub.data  # 返回该空子句
-        print("Branch fail and return.")
+        if debug:
+            print("Branch fail and return.")
         return None  # fail
 
 
