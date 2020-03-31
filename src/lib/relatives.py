@@ -20,6 +20,9 @@ class Relatives:
         = Predicate.create_preds(["男性", "女性", "亲子关系",
                                   "父子关系", "父女关系", "母子关系",
                                   "母女关系", "兄妹关系", "表兄妹"])
+    # create_preds是简化的批量声明方法，只能声明
+    # (<para1>, <para2>, ...)是<info>
+    # 形式的谓词
 
     # 规则集，在这个列表中添加亲属关系所需的规则
     _rules_set = [

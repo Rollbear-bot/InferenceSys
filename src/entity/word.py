@@ -2,12 +2,17 @@
 # @Time: 2020/3/25 20:26
 # @Author: Rollbear
 # @Filename: word.py
+# 包含"谓词", "文字", 变元对象"Anyone"的声明
 
 
 class Word:
     """文字"""
     def __init__(self, predicate, constant: list):
-        """构造方法"""
+        """
+        构造方法
+        :param predicate: 谓词对象
+        :param constant: 常量列表，也可以包含Anyone变元对象
+        """
         self.constant = constant  # 常量，也能存放变量Anyone对象
         self.pred = predicate  # 谓词
 
@@ -15,7 +20,11 @@ class Word:
         return self.pred.func([str(c) for c in self.constant])
 
     def is_equal(self, other):
-        """判断两个文字是否相等"""
+        """
+        判断两个文字是否相等
+        :param other: 另一个文字对象
+        :return: 布尔值
+        """
         if other is None:
             return False
         if len(self.constant) != len(other.constant):
@@ -39,6 +48,10 @@ class Word:
 class Predicate:
     """谓词"""
     def __init__(self, lambda_func):
+        """
+        构造方法
+        :param lambda_func: 一个函数地址，可以用lambda定义
+        """
         self.func = lambda_func
 
     def exec(self, p: list):

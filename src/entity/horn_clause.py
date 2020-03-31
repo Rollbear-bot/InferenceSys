@@ -2,6 +2,7 @@
 # @Time: 2020/3/25 20:20
 # @Author: Rollbear
 # @Filename: horn_clause.py
+# 霍恩子句的声明
 from entity.word import Anyone, Word
 
 
@@ -13,9 +14,13 @@ class InvalidOperation(Exception):
 class HornClause:
     """Horn子句"""
     def __init__(self, head, body: list):
-        """构造方法"""
-        self.head = head
-        self.body = body
+        """
+        构造方法
+        :param head: 子句头部，一个Word文字对象
+        :param body: 子句体，一个Word对象列表
+        """
+        self.head = head.copy() if head is not None else None
+        self.body = body if len(body) != 0 else [None]
 
     def __str__(self):
         return str(self.head) + " <- " \

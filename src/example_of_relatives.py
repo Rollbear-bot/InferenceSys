@@ -10,6 +10,7 @@ from entity.horn_clause import HornClause
 
 def main():
     # 证明目标：Tom和Sally是兄妹关系（不区分年龄）
+    # 注：如果更换证明目标后证明失败，先检查库中的规则是否满足证明需求
     t = HornClause(None, [Relatives.bro_sister.exec(["Tom", "Sally"])])
 
     # 事实集合

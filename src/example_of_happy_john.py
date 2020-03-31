@@ -12,6 +12,7 @@ def main():
     # 声明证明目标子句，"happy"是HappyJohn库中声明的谓词对象
     # 证明目标：子句"None <- John快乐"，
     # 在子句对象输出时使用None占位，表示某个位置空
+    # 注：如果更换证明目标后证明失败，先检查库中的规则是否满足证明需求
     t = HornClause(None, [HappyJohn.happy.exec(["John"])])
 
     # 事实集

@@ -2,6 +2,7 @@
 # @Time: 2020/3/25 20:22
 # @Author: Rollbear
 # @Filename: system.py
+# 推理系统的声明
 
 from .horn_clause import HornClause
 from .tree import Node
@@ -11,7 +12,10 @@ class System:
     """推理系统"""
 
     def __init__(self, target: HornClause):
-        """构造方法"""
+        """
+        构造方法
+        :param target: 证明目标，一个Horn子句对象
+        """
         self.rules = []  # 规则集
         self.facts = []  # 事实集
         self.target = target  # 证明目标
@@ -22,9 +26,9 @@ class System:
             raise UnexpectedObj
         self.rules.append(rule)
 
-    def add_rules(self, rules: list):
+    def add_rules(self, rules):
         """批量添加规则"""
-        for r in rules:
+        for r in list(rules):
             self.add_rule(r)
 
     def add_fact(self, fact: HornClause):
@@ -38,7 +42,7 @@ class System:
 
     def add_facts(self, facts):
         """批量添加事实"""
-        for f in facts:
+        for f in list(facts):
             self.add_fact(f)
 
     def show(self):
