@@ -9,7 +9,6 @@ import unittest
 from entity.word import Anyone, Predicate
 from entity.horn_clause import HornClause
 from entity.system import System
-from entity.tree import Node
 
 
 def create_tmp_horn_clauses():
@@ -68,9 +67,7 @@ class TestSys(unittest.TestCase):
         sys = System(t)
         sys.add_facts([f1, f2])
         sys.add_rules([r1, r2, r3, r4])
-        sys.show()
-        res = sys.run(debug=True)  # 开始推理
-        print(res)
+        self.assertTrue(sys.run())
 
     def test_system_case_2(self):
         """测试亲戚关系运算"""
@@ -106,10 +103,7 @@ class TestSys(unittest.TestCase):
         sys = System(target)
         sys.add_facts([f1, f2])
         sys.add_rules([r1, r2, r3, r4, r5])
-        sys.show()
-        sys.run(debug=True)
-
-
+        self.assertTrue(sys.run())
 
 
 class TestWord(unittest.TestCase):
@@ -163,6 +157,7 @@ class TestHornClause(unittest.TestCase):
         female = Predicate.create_pred("女性")
         body = ((male, ["A"]), (female, ["B"]))
         c = HornClause.create_clause_variables_only((male, ["A"]), body)
+        self.assertEqual(str(c), "(<变量A>)是男性 <- (<变量A>)是男性, (<变量B>)是女性")
 
 
 if __name__ == '__main__':
